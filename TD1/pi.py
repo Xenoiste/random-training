@@ -1,37 +1,63 @@
 import random
+import matplotlib.pyplot as plt
+import numpy as np
 from RNG import middleSquare
-from math import sqrt
+from math import sqrt, ceil
+from RANDU import randu
 
-initialSeed = 127634
+SEED = 127634
+
+def randomMiddleSquareNumbers(n, seed = random.randint(0, 10 ** 6)):
+    list = []
+    temp = seed
+    for i in range(n):
+        temp = middleSquare(temp, len(str(seed)))
+        list.append(temp)
+    return list
+
+def randomRandomNumbers(n):
+    list = []
+    for i in range(n):
+        list.append(random.random())
+    return list
+
+def randomRanduNumbers(n, seed = random.randint(0, 10 ** 6)):
+    list = []
+    temp = seed
+    for i in range(n):
+        temp = randu(temp)
+        list.append(temp)
+    return list
 
 def d(x, y):
-    d = sqrt(x**2 + y **2)
+    d = x**2 + y**2
     if d <= 1:
         return 1
     else:
         return 0
 
-def superMiddleSquare():
-    if (not("seed" in locals())): seed = initialSeed
-    seed = middleSquare(seed, 10)
-    return seed / (10 ** len(str(seed)))
-
-
-# def calcPI():
-#     n = 10 ** 6
-#     somme = 0
-#     for i in range(n):
-#         somme += d(random.random(), random.random())
-#     resultat = somme * 4 / n
-#     print(resultat)
-
-def calcPI(randomFunction):
-    n = 10 ** 2
+def calcPI(randomNumbers):
+    n = len(randomNumbers)//2
     somme = 0
-    for i in range(n):
-        somme += d(randomFunction(), randomFunction())
+    for i in range(0, n*2, 2):
+        somme += d(random.random(), random.random())
     resultat = somme * 4 / n
-    print(resultat)
+    return resultat
 
-calcPI(superMiddleSquare)
-print("3.14159265358979323846264338327950288419716939937510")
+# print(calcPI(randomMiddleSquareNumbers(10 ** 3)))
+# print(calcPI(randomRandomNumbers(10 ** 6)))
+# print(calcPI(randomRanduNumbers(10 ** 6)))
+
+plt.style.use('_mpl-gallery')
+fig, ax = plt.subplots()
+ax.set_title('PI')
+ax.scatter(1, 1, s=1,)
+
+n = 10 ** 2
+randomNumbers = randomRandomNumbers(n * 2)
+for i in range(0, n * 2, 2):
+    if d(randomNumbers[i], randomNumbers[i + 1]) == 1:
+        ax.scatter(randomNumbers[i], randomNumbers[i + 1], s=1, color='red')
+    else:
+        ax.scatter(randomNumbers[i], randomNumbers[i + 1], s=1, color='blue')
+plt.show()
